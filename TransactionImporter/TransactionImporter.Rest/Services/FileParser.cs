@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TransactionImporter.Rest.Models;
 
@@ -11,6 +12,9 @@ namespace TransactionImporter.Rest.Services
         private IFormatStrategy _formatStrategy;
         private readonly IMapper _mapper;
 
+        private readonly string[] csvContentTypes = { "text/csv", "application/vnd.ms-excel" };
+        private readonly string[] xmlContentTypes = { "application/xml", "text/xml" };
+
         public FileParser(IMapper mapper)
            => _mapper = mapper;
 
@@ -19,11 +23,11 @@ namespace TransactionImporter.Rest.Services
             List<TransactionImportModel> modelList;
             switch (file.ContentType)
             {
-                case "text/csv":
+                case string a when csvContentTypes.Contains(a):
                     _formatStrategy = new CsvFormatStrategy(_mapper);
                     modelList = await _formatStrategy.Format<TransactionImportModel, TransactionCsv>(file);
                     break;
-                case "application/xml":
+                case string a when xmlContentTypes.Contains(a):
                     _formatStrategy = new XmlFormatStrategy(_mapper);
                     modelList = await _formatStrategy.Format<TransactionImportModel, TransactionXml>(file);
                     break;
