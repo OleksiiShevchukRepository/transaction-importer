@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using TransactionImporter.DataAccess.Entities;
 
-namespace DummyMvs.Services
+namespace TransactionImporter.Services
 {
     public interface ITransactionReader
     {
