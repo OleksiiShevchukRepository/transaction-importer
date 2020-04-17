@@ -28,7 +28,8 @@ namespace TransactionImporter.Rest.Attributes
             if (!IsFileValid(formFile))
             {
                 context.HttpContext.Response.ContentType = "application/json; charset=utf-8";
-                var json = JsonConvert.SerializeObject(new { Title = "Unknown file format", Status = HttpStatusCode.BadRequest });
+                var json = JsonConvert.SerializeObject(
+                    new { Title = "Unknown file format", Status = HttpStatusCode.BadRequest });
 
                 await context.HttpContext.Response.WriteAsync(json, Encoding.UTF8);
             }
