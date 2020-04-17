@@ -12,8 +12,7 @@ namespace TransactionImporter.Rest.Formatters
     public class CsvImportFormatter
     {
         private readonly CsvFormatterOptions _options;
-        private readonly bool useJsonAttributes = true;
-        public CsvImportFormatter() => _options = new CsvFormatterOptions();
+        public CsvImportFormatter(CsvFormatterOptions options) => _options = options;
 
         public async Task<List<T>> ReadStreamCsvAsync<T>(IFormFile formFile) where T : class
         {
@@ -36,9 +35,7 @@ namespace TransactionImporter.Rest.Formatters
                         {
                             var itemTypeInGeneric = list.GetType().GetTypeInfo().GenericTypeArguments[0];
                             var item = Activator.CreateInstance(itemTypeInGeneric);
-                            var properties = useJsonAttributes
-                                ? item.GetType().GetProperties().Where(pi => !pi.GetCustomAttributes<JsonIgnoreAttribute>().Any()).ToArray()
-                                : item.GetType().GetProperties();
+                            var properties = item.GetType().GetProperties().Where(pi => !pi.GetCustomAttributes<JsonIgnoreAttribute>().Any()).ToArray();
 
                             for (int i = 0; i < values.Length; i++)
                             {
