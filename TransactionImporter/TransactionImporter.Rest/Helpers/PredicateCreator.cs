@@ -10,16 +10,16 @@ namespace TransactionImporter.Rest.Helpers
         public static Func<Transaction, bool> CreateTransactionFilter(string currencyCode, DateTime? dateFrom,
             DateTime? dateTo, string status)
         {
-            var predicate = PredicateBuilder.New<Transaction>(true);
+            ExpressionStarter<Transaction> predicate = PredicateBuilder.New<Transaction>(true);
 
             if (!string.IsNullOrEmpty(currencyCode))
                 predicate = predicate.And(c => c.CurrencyCode == currencyCode);
 
             if (dateFrom != null)
-                predicate = predicate.And(c => c.TransactionDate >= dateFrom);
+            predicate = predicate.And(c => c.TransactionDate.CompareTo(dateFrom.Value) >= 0);
 
             if (dateTo != null)
-                predicate = predicate.And(c => c.TransactionDate <= dateTo);
+                predicate = predicate.And(c => c.TransactionDate.CompareTo(dateTo.Value) <= 0);
 
             if (!string.IsNullOrEmpty(status) && Enum.IsDefined(typeof(TransactionStatusEnum), status))
                 predicate = predicate.And(c => 
