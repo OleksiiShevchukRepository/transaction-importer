@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace TransactionImporter.Rest
 {
@@ -11,10 +13,17 @@ namespace TransactionImporter.Rest
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
+           Host
+            .CreateDefaultBuilder(args)
+            .ConfigureLogging((hostContext, loggingBuilder) =>
+            {
+                loggingBuilder.AddConfiguration(hostContext.Configuration.GetSection("Logging"));
+                if (hostContext.HostingEnvironment.IsDevelopment())
                 {
-                    webBuilder.UseStartup<Startup>();
-                });
+                    // log to file functionality could be added here
+                    loggingBuilder.AddConsole();
+                }
+            })
+            .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>());
     }
 }

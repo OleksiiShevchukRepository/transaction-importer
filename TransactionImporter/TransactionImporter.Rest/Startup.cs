@@ -49,8 +49,10 @@ namespace TransactionImporter.Rest
                 app.UseGlobalExceptionHandler(logger, respondWithJsonErrorDetails: false);
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
             app.UseRouting();
 
             app.UseAuthorization();
