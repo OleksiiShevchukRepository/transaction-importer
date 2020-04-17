@@ -1,16 +1,15 @@
-﻿using DummyMvc.DataAccess;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TransactionImporter.DataAccess;
 using TransactionImporter.DataAccess.Entities;
-using TransactionImporter.Services;
 
-namespace DummyMvs.Services
+namespace TransactionImporter.Services
 {
-    public class TransactionImporter : ITransactionImporter
+    public class TransactionImporterService : ITransactionImporter
     {
         private readonly TransactionDbContext _dbContext;
-        public TransactionImporter(TransactionDbContext dbContext)
+        public TransactionImporterService(TransactionDbContext dbContext)
            => _dbContext = dbContext;
 
         public async Task ImportTransactions(IEnumerable<Transaction> transactions)

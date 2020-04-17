@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using TransactionImporter.DataAccess.Entities;
 
-namespace DummyMvc.DataAccess.EntitiesConfigurations
+namespace TransactionImporter.DataAccess.Configurations
 {
     internal class TransactionEntityConfiguration : IEntityTypeConfiguration<Transaction>
     {
@@ -22,7 +22,7 @@ namespace DummyMvc.DataAccess.EntitiesConfigurations
                 .Property(a => a.TransactionStatus)
                 .IsRequired()
                 .HasConversion(e => e.ToString(), e => (TransactionStatusEnum)Enum.Parse(typeof(TransactionStatusEnum), e));
-            
+
         }
     }
 }

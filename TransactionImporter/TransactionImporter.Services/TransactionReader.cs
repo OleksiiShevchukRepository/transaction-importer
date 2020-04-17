@@ -1,10 +1,10 @@
-﻿using DummyMvc.DataAccess;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TransactionImporter.DataAccess;
 using TransactionImporter.DataAccess.Entities;
 
-namespace DummyMvs.Services
+namespace TransactionImporter.Services
 {
     public class TransactionReader : ITransactionReader
     {

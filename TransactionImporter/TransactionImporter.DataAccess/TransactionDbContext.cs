@@ -1,8 +1,8 @@
-﻿using DummyMvc.DataAccess.EntitiesConfigurations;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using TransactionImporter.DataAccess.Configurations;
 using TransactionImporter.DataAccess.Entities;
 
-namespace DummyMvc.DataAccess
+namespace TransactionImporter.DataAccess
 {
     public class TransactionDbContext : DbContext
     {

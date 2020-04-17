@@ -1,17 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DummyMvc.DataAccess;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using TransactionImporter.DataAccess;
+using TransactionImporter.Rest.Extensions;
+using TransactionImporter.Rest.Mappings;
+using TransactionImporter.Rest.Services;
+using TransactionImporter.Services;
 
 namespace TransactionImporter.Rest
 {
@@ -28,20 +27,33 @@ namespace TransactionImporter.Rest
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            
+            // add mapping functionality
+            var mappingConfig = new MapperConfiguration(mc => mc.AddProfile(new MappingProfile("default")));
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
 
             services.AddDbContext<TransactionDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("TransactionDb")));
+
+            services.AddScoped<ITransactionReader, TransactionReader>();
+            services.AddScoped<ITransactionImporter, TransactionImporterService>();
+            services.AddSingleton<IFileParser, FileParser>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
+                app.UseGlobalExceptionHandler(logger, respondWithJsonErrorDetails: true);
+            else
             {
-                app.UseDeveloperExceptionPage();
+                app.UseGlobalExceptionHandler(logger, respondWithJsonErrorDetails: false);
+                app.UseHsts();
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
             app.UseRouting();
 
