@@ -22,38 +22,36 @@ namespace TransactionImporter.Rest.Formatters
             using (var stream = formFile.OpenReadStream())
             {
                 bool skipFirstLine = _options.UseSingleLineHeaderInCsv;
-                using (var reader = new StreamReader(stream, _options.Encoding))
+                using var reader = new StreamReader(stream, _options.Encoding);
+                while (!reader.EndOfStream)
                 {
-                    while (!reader.EndOfStream)
+                    var line = await reader.ReadLineAsync();
+                    var values = line.Split(_options.CsvDelimiter.ToCharArray());
+
+                    if (skipFirstLine)
+                        skipFirstLine = false;
+                    else
                     {
-                        var line = await reader.ReadLineAsync();
-                        var values = line.Split(_options.CsvDelimiter.ToCharArray());
+                        var itemTypeInGeneric = list.GetType().GetTypeInfo().GenericTypeArguments[0];
+                        var item = Activator.CreateInstance(itemTypeInGeneric);
+                        var properties = item.GetType().GetProperties().Where(pi => !pi.GetCustomAttributes<JsonIgnoreAttribute>().Any()).ToArray();
 
-                        if (skipFirstLine)
-                            skipFirstLine = false;
-                        else
+                        for (int i = 0; i < values.Length; i++)
                         {
-                            var itemTypeInGeneric = list.GetType().GetTypeInfo().GenericTypeArguments[0];
-                            var item = Activator.CreateInstance(itemTypeInGeneric);
-                            var properties = item.GetType().GetProperties().Where(pi => !pi.GetCustomAttributes<JsonIgnoreAttribute>().Any()).ToArray();
+                            object propertyValue;
+                            var propertyType = properties[i].PropertyType;
+                            var underlyingType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
 
-                            for (int i = 0; i < values.Length; i++)
-                            {
-                                object propertyValue;
-                                Type propertyType = properties[i].PropertyType;
-                                Type underlyingType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
+                            if (underlyingType.IsEnum)
+                                propertyValue = string.IsNullOrEmpty(values[i]) || !Enum.IsDefined(underlyingType, values[i])
+                                    ? default : Enum.Parse(underlyingType, values[i]);
+                            else
+                                propertyValue = string.IsNullOrEmpty(values[i]) ? null : Convert.ChangeType(values[i], underlyingType);
 
-                                if (underlyingType.IsEnum)
-                                    propertyValue = string.IsNullOrEmpty(values[i]) || !Enum.IsDefined(underlyingType, values[i])
-                                        ? default : Enum.Parse(underlyingType, values[i]);
-                                else
-                                    propertyValue = string.IsNullOrEmpty(values[i]) ? null : Convert.ChangeType(values[i], underlyingType);
-
-                                properties[i].SetValue(item, propertyValue, null);
-                            }
-
-                            list.Add((T)item);
+                            properties[i].SetValue(item, propertyValue, null);
                         }
+
+                        list.Add((T)item);
                     }
                 }
             }

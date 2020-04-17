@@ -7,10 +7,7 @@ namespace TransactionImporter.Rest
 {
     public class Program
     {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
+        public static void Main(string[] args) => CreateHostBuilder(args).Build().Run();
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
            Host
@@ -18,11 +15,9 @@ namespace TransactionImporter.Rest
             .ConfigureLogging((hostContext, loggingBuilder) =>
             {
                 loggingBuilder.AddConfiguration(hostContext.Configuration.GetSection("Logging"));
+
                 if (hostContext.HostingEnvironment.IsDevelopment())
-                {
-                    // log to file functionality could be added here
-                    loggingBuilder.AddConsole();
-                }
+                    loggingBuilder.AddConsole(); // log to file functionality could be added here
             })
             .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>());
     }

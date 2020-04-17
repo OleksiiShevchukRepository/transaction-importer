@@ -12,6 +12,7 @@ namespace TransactionImporter.Rest.Validators
         {
             var collectedModelErrors = entities
                 .SelectMany(e => ValidateModelEntity(e));
+
             foreach (var error in collectedModelErrors)
                 modelState.AddModelError(error.ErrorKey, error.ErrorMessage);
 

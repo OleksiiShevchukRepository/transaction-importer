@@ -12,8 +12,8 @@ namespace TransactionImporter.Rest.Services
         private readonly IMapper _mapper;
         public XmlFormatStrategy(IMapper mapper)
         {
-            _xmlImportFormatter = new XmlImportFormatter();
             _mapper = mapper;
+            _xmlImportFormatter = new XmlImportFormatter();
         }
 
         public async Task<List<TOut>> Format<TOut, TIn>(IFormFile formFile)
@@ -22,6 +22,7 @@ namespace TransactionImporter.Rest.Services
         {
             var formattedModel = await _xmlImportFormatter.ReadStreamXmlAsync<TIn>(formFile);
             var outputList = new List<TOut>();
+
             foreach (var item in formattedModel)
             {
                 var outputItem = _mapper.Map<TOut>(item);
