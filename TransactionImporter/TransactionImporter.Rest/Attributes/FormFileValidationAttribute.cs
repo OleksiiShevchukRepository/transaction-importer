@@ -14,10 +14,10 @@ namespace TransactionImporter.Rest.Attributes
     {
         private readonly long _maxFileSize;
         private readonly string[] _allowedExtensions;
-        public FormFileValidationAttribute(long maxFileSize, string[] allowedExtnsions)
+        public FormFileValidationAttribute(long maxFileSize, string[] allowedExtensions)
         {
             _maxFileSize = maxFileSize;
-            _allowedExtensions = allowedExtnsions;
+            _allowedExtensions = allowedExtensions;
         }
 
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)

@@ -5,12 +5,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using TransactionImporter.Rest.Services;
-using TransactionImporter.Services;
 using TransactionImporter.Rest.Validators;
 using TransactionImporter.DataAccess.Entities;
 using TransactionImporter.Rest.Models;
 using TransactionImporter.Rest.Helpers;
 using TransactionImporter.Rest.Attributes;
+using TransactionImporter.Services;
 
 namespace TransactionImporter.Rest.Controllers
 {
@@ -33,7 +33,7 @@ namespace TransactionImporter.Rest.Controllers
         }
 
         [HttpPost]
-        [FormFileValidation(5 * 1024 * 1024, new string[] { ".csv", ".xml" })]
+        [FormFileValidation(maxFileSize: 5 * 1024 * 1024, allowedExtensions: new string[] { ".csv", ".xml" })]
         public async Task<IActionResult> Post()
         {
             var models = await _fileParser.CreateTransactionModelFromFile(Request.Form.Files[0]);
