@@ -7,7 +7,7 @@ using TransactionImporter.Rest.Models;
 
 namespace TransactionImporter.Rest.Services
 {
-    public class FileParser
+    public class FileParser : IFileParser
     {
         private IFormatStrategy _formatStrategy;
         private readonly IMapper _mapper;

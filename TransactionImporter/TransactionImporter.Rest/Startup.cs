@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using TransactionImporter.DataAccess;
 using TransactionImporter.Rest.Extensions;
 using TransactionImporter.Rest.Mappings;
+using TransactionImporter.Rest.Services;
 using TransactionImporter.Services;
 
 namespace TransactionImporter.Rest
@@ -37,6 +38,7 @@ namespace TransactionImporter.Rest
 
             services.AddScoped<ITransactionReader, TransactionReader>();
             services.AddScoped<ITransactionImporter, TransactionImporterService>();
+            services.AddSingleton<IFileParser, FileParser>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

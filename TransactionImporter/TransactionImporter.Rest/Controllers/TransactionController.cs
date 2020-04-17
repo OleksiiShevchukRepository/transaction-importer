@@ -18,15 +18,16 @@ namespace TransactionImporter.Rest.Controllers
     [Route("api/[controller]")]
     public class TransactionController : ControllerBase
     {
-        private readonly FileParser _fileParser;
+        private readonly IFileParser _fileParser;
         private readonly ITransactionReader _transactionReader;
         private readonly ITransactionImporter _transactionImporter;
         private readonly IMapper _mapper;
 
-        public TransactionController(IMapper mapper, ITransactionReader transactionReader, ITransactionImporter transactionImporter)
+        public TransactionController(IMapper mapper, ITransactionReader transactionReader,
+            ITransactionImporter transactionImporter, IFileParser fileParser)
         {
             _mapper = mapper;
-            _fileParser = new FileParser(_mapper);
+            _fileParser = fileParser;
             _transactionReader = transactionReader;
             _transactionImporter = transactionImporter;
         }
